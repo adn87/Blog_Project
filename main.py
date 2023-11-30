@@ -1,26 +1,31 @@
 from flask import Flask, render_template
-from post import Post
 import requests
 
 app = Flask(__name__)
+posts = requests.get("https://api.npoint.io/b913b4a2760c49544930").json()
 
-posts = requests.get("https://api.npoint.io/c790b4d5cab58020d391").json()
-post_object = []
-for post in posts:
-    post_obj = Post(post["id"], post["title"], post["subtitle"], post["body"])
-    post_object.append(post_obj)
 
 
 @app.route('/')
 def home():
-    return render_template("index.html", all_posts=post_object)
+    return render_template("index.html", all_posts=posts)
+
+
+@app.route('/about')
+def about():
+    return render_template("about.html")
+
+
+@app.route('/contact')
+def contact():
+    return render_template("contact.html")
 
 
 @app.route('/post/<int:index>')
 def show_post(index):
     requested_post = None
-    for blog_post in post_object:
-        if blog_post.id == index:
+    for blog_post in posts:
+        if blog_post["id"] == index:
             requested_post = blog_post
     return render_template("post.html", post=requested_post)
 
