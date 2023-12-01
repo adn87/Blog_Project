@@ -1,27 +1,34 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 import requests
 
-app = Flask(__name__)
 posts = requests.get("https://api.npoint.io/b913b4a2760c49544930").json()
 
+app = Flask(__name__)
 
 
 @app.route('/')
-def home():
+def get_all_posts():
     return render_template("index.html", all_posts=posts)
 
 
-@app.route('/about')
+@app.route("/about")
 def about():
     return render_template("about.html")
 
 
-@app.route('/contact')
+@app.route("/contact", methods=["GET","POST"])
 def contact():
-    return render_template("contact.html")
+    if request.method == "POST":
+        data = request.form
+        print(data['name'])
+        print(data['email'])
+        print(data['phone'])
+        print(data['message'])
+        return render_template("contact.html", msg_sent=True)
+    return render_template("contact.html", msg_sent=False)
 
 
-@app.route('/post/<int:index>')
+@app.route("/post/<int:index>")
 def show_post(index):
     requested_post = None
     for blog_post in posts:
@@ -31,4 +38,4 @@ def show_post(index):
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
