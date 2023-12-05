@@ -22,6 +22,7 @@ This will install the packages from the requirements.txt for this project.
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = '8BYkEfBA6O6donzWlSihBXox7C0sKR6b'
+ckeditor = CKEditor(app)
 Bootstrap5(app)
 
 # CONNECT TO DB
@@ -39,6 +40,15 @@ class BlogPost(db.Model):
     body = db.Column(db.Text, nullable=False)
     author = db.Column(db.String(250), nullable=False)
     img_url = db.Column(db.String(250), nullable=False)
+
+
+class CreateNewForm(FlaskForm):
+    title = StringField("Blog Post Title", validators=[DataRequired()])
+    subtitle = StringField("Subtitle", validators=[DataRequired()])
+    author = StringField("Author", validators=[DataRequired()])
+    img_url = StringField("Blog Image URL", validators=[DataRequired()])
+    body = CKEditorField("Blog Content", validators=[DataRequired()])
+    submit = SubmitField("Submit Post")
 
 
 with app.app_context():
@@ -59,6 +69,23 @@ def show_post(post_id):
 
 
 # TODO: add_new_post() to create a new blog post
+@app.route('/new-post', methods=["GET", "POST"])
+def add_new_post():
+    form = CreateNewForm()
+    if form.validate_on_submit():
+        new_post = BlogPost(
+            title=form.title.data,
+            subtitle=form.subtitle.data,
+            author=form.author.data,
+            img_url=form.img_url.data,
+            body=form.body.data,
+            date=date.today().strftime("%B %d %Y")
+        )
+        db.session.add(new_post)
+        db.session.commit()
+        return redirect(url_for('get_all_posts'))
+    return render_template("make_post.html", form=form)
+
 
 # TODO: edit_post() to change an existing blog post
 
