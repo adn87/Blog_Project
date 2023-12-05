@@ -10,8 +10,8 @@
       <div class="col-md-10 col-lg-8 col-xl-7">
         <div class="page-heading">
           {% if msg_sent: %}
-          <h1>Message sent</h1>
-          {% else %}
+          <h1>Successfully sent your message</h1>
+          {% else: %}
           <h1>Contact Me</h1>
           {% endif %}
           <span class="subheading">Have questions? I have answers.</span>
@@ -32,7 +32,6 @@
         <div class="my-5">
           <!-- * * * * * * * * * * * * * * *-->
           <!-- * * Simplified SB Contact Form for the Tutorial* *-->
-          <!-- TODO: add an "action" and a "method" to link this form to your main.py -->
           <form
             id="contactForm"
             name="sentMessage"
@@ -85,11 +84,11 @@
             </div>
             <br />
             <button
-              class="btn btn-primary text-uppercase"
+              class="btn btn-danger text-uppercase"
               id="submitButton"
               type="submit"
             >
-              Send
+              NOT USED in Day 67
             </button>
           </form>
         </div>
